@@ -17,12 +17,14 @@ import { useAuth } from "@/context/AuthContext";
 
 const DEPARTMENTS = [
   "HR",
-  "Sales",
+  "Sales - Visnagar",
+  "Sales - Ahmedabad",
+  "Sales - Pune",
   "Marketing",
   "Technical",
   "Admin",
   "Utility",
-  "Lead ",
+  "Lead Generation",
   "Onboarding",
   "Accounts",
   "Customer Service Representative",
