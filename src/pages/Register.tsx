@@ -22,6 +22,11 @@ const DEPARTMENTS = [
   "Technical",
   "Admin",
   "Utility",
+  "Lead ",
+  "Onboarding",
+  "Accounts",
+  "Customer Service Representative",
+  "CV Expert",
 ] as const;
 
 const GENDERS = ["Male", "Female", "Other"] as const;
