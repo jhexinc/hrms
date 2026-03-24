@@ -8,7 +8,6 @@ export const BRANCH_ADDRESS_MAP: Record<string, string> = {
   "Pune, Maharashtra":
     "DNK Square, 1005 – 10th floor, Airport Road, Sakore Nagar, Viman Nagar, Pune - 411014",
 
-  /* Optional fallback */
-  "Mehsana, Gujarat":
-    "Mehsana, Gujarat"
+  "Visnagar New, Gujarat":
+    "--"
 };
