@@ -426,8 +426,8 @@ export default function AdminEmployeeEdit() {
                     <SelectItem value="Pune, Maharashtra">
                       Pune, Maharashtra
                     </SelectItem>
-                    <SelectItem value="Mehsana, Gujarat">
-                      Mehsana, Gujarat
+                    <SelectItem value="Visnagar 2, Gujarat">
+                      Visnagar 2, Gujarat
                     </SelectItem>
                   </SelectContent>
                 </Select>
