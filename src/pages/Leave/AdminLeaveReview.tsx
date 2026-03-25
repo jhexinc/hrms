@@ -37,6 +37,8 @@ export default function AdminLeaveReview() {
   const [cpl, setCpl] = useState(0);
   const [sl, setSl] = useState(0);
   const [lop, setLop] = useState(0);
+  const [dailyAllocation, setDailyAllocation] = useState<any[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +66,24 @@ export default function AdminLeaveReview() {
             setSl(currentLeave.breakup.SL || 0);
             setLop(currentLeave.breakup.LOP || 0);
           }
+          if (currentLeave.dailyBreakdown) {
+            let hasAlloc = currentLeave.dailyBreakdown.some((d: any) => d.allocation);
+            if (hasAlloc) {
+              setDailyAllocation(currentLeave.dailyBreakdown);
+            } else {
+              // Auto-allocate initially based on overall breakup
+              let remainingCPL = currentLeave.breakup?.CPL || 0;
+              let remainingSL = currentLeave.breakup?.SL || 0;
+              const newAlloc = currentLeave.dailyBreakdown.map((d: any) => {
+                let type = d.type === 'FULL' ? 1 : 0.5;
+                let alloc = "LOP";
+                if (remainingCPL >= type) { alloc = "CPL"; remainingCPL -= type; }
+                else if (remainingSL >= type) { alloc = "SL"; remainingSL -= type; }
+                return { ...d, allocation: alloc };
+              });
+              setDailyAllocation(newAlloc);
+            }
+          }
           if (currentLeave.hrComment) {
             setComment(currentLeave.hrComment);
           }
@@ -78,6 +98,20 @@ export default function AdminLeaveReview() {
 
     fetchData();
   }, [leaveId]);
+
+  useEffect(() => {
+    if (dailyAllocation.length > 0) {
+      let tempCpl = 0;
+      let tempSl = 0;
+      dailyAllocation.forEach(d => {
+         let val = d.type === 'FULL' ? 1 : 0.5;
+         if (d.allocation === 'CPL') tempCpl += val;
+         else if (d.allocation === 'SL') tempSl += val;
+      });
+      setCpl(tempCpl);
+      setSl(tempSl);
+    }
+  }, [dailyAllocation]);
 
   useEffect(() => {
     if (!leave) return;
@@ -125,6 +159,7 @@ export default function AdminLeaveReview() {
         breakup: { CPL: cpl, SL: sl, LOP: lop },
         sandwichApplied,
         comment,
+        dailyBreakdown: dailyAllocation,
       });
 
 
@@ -471,11 +506,8 @@ export default function AdminLeaveReview() {
                     <Input
                       type="number"
                       value={cpl}
-                      onChange={(e) => setCpl(Math.max(0, +e.target.value))}
-                      disabled={submitting}
-                      min={0}
-                      max={employeeBalance?.CPL || leave.totalDays}
-                      className={`border-border bg-background ${employeeBalance && cpl > employeeBalance.CPL
+                      disabled
+                      className={`border-border bg-muted text-foreground ${employeeBalance && cpl > employeeBalance.CPL
                         ? "border-destructive/50 focus-visible:ring-destructive"
                         : ""
                         }`}
@@ -505,11 +537,8 @@ export default function AdminLeaveReview() {
                     <Input
                       type="number"
                       value={sl}
-                      onChange={(e) => setSl(Math.max(0, +e.target.value))}
-                      disabled={submitting}
-                      min={0}
-                      max={employeeBalance?.SL || leave.totalDays}
-                      className={`border-border bg-background ${employeeBalance && sl > employeeBalance.SL
+                      disabled
+                      className={`border-border bg-muted text-foreground ${employeeBalance && sl > employeeBalance.SL
                         ? "border-destructive/50 focus-visible:ring-destructive"
                         : ""
                         }`}
@@ -531,8 +560,36 @@ export default function AdminLeaveReview() {
                   </div>
                 </div>
 
+                {/* Daily Allocation Section */}
+                {dailyAllocation.length > 0 && (
+                  <div className="space-y-3 pt-4 border-t border-border mt-4">
+                    <h4 className="text-sm font-medium text-foreground">Specify Dates for Casual/Sick Leave</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {dailyAllocation.map((d, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-3 border border-border rounded-md bg-muted/20">
+                          <span className="text-sm text-foreground">{formatDate(d.date)} ({d.type === 'FULL' ? 'Full Day' : 'Half Day'})</span>
+                          <select
+                            className="text-sm border border-border rounded-md p-1.5 bg-background text-foreground"
+                            value={d.allocation || "LOP"}
+                            onChange={(e) => {
+                              const newAlloc = [...dailyAllocation];
+                              newAlloc[idx].allocation = e.target.value;
+                              setDailyAllocation(newAlloc);
+                            }}
+                            disabled={submitting}
+                          >
+                            <option value="CPL">CPL</option>
+                            <option value="SL">SL</option>
+                            <option value="LOP">LOP</option>
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Allocation Summary */}
-                <div className="bg-muted/30 rounded-lg p-4 border border-border">
+                <div className="bg-muted/30 rounded-lg p-4 border border-border mt-6">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-foreground">
                       Allocation Summary
