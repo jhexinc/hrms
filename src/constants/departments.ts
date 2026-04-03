@@ -2,7 +2,9 @@
 
 export const DEPARTMENTS = [
   "HR",
-  "Sales",
+  "Sales - Visnagar",
+  "Sales - Pune",
+  "Sales - Ahmedabad",
   "Marketing",
   "Technical",
   "Admin",
