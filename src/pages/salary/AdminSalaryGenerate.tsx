@@ -42,6 +42,7 @@ export default function AdminSalaryGenerate() {
   const suggestions =
     query.length >= 2
       ? employees.filter((e) => {
+        if (e.isActive === false) return false;
         const lowerQuery = query.toLowerCase();
         return (
           e.employeeCode?.toLowerCase().includes(lowerQuery) ||

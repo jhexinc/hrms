@@ -15,21 +15,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-const DEPARTMENTS = [
-  "HR",
-  "Sales - Visnagar",
-  "Sales - Ahmedabad",
-  "Sales - Pune",
-  "Marketing",
-  "Technical",
-  "Admin",
-  "Utility",
-  "Lead Generation",
-  "Onboarding",
-  "Accounts",
-  "Customer Service Representative",
-  "CV Expert",
-] as const;
+import { DEPARTMENTS } from "@/constants/departments";
+
 
 const GENDERS = ["Male", "Female", "Other"] as const;
 

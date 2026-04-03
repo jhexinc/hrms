@@ -107,7 +107,7 @@ export default function AdminDashboard() {
 
   const today = new Date();
   const upcomingBirthdays = employees.filter((e) => {
-    if (!e.dob) return false;
+    if (!e.dob || e.isActive === false) return false;
     const dob = new Date(e.dob);
     const thisYearBirthday = new Date(
       today.getFullYear(),

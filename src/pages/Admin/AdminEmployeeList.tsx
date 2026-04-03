@@ -25,6 +25,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Pencil, Search } from "lucide-react";
+import { DEPARTMENTS } from "@/constants/departments";
+
 
 export default function AdminEmployeeList() {
   const navigate = useNavigate();
@@ -39,6 +41,15 @@ export default function AdminEmployeeList() {
   useEffect(() => {
     loadEmployees();
   }, []);
+
+  const departmentOptions = useMemo(() => {
+    const set = new Set<string>([...DEPARTMENTS]);
+    employees.forEach((e) => {
+      if (e.department) set.add(e.department);
+    });
+    return Array.from(set).sort();
+  }, [employees]);
+
 
   async function loadEmployees() {
     try {
@@ -277,9 +288,11 @@ export default function AdminEmployeeList() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Departments</SelectItem>
-              <SelectItem value="Technical">Technical</SelectItem>
-              <SelectItem value="HR">HR</SelectItem>
-              <SelectItem value="Sales">Sales</SelectItem>
+              {departmentOptions.map((dept) => (
+                <SelectItem key={dept} value={dept}>
+                  {dept}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 

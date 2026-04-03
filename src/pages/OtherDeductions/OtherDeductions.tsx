@@ -37,6 +37,7 @@ type Employee = {
   department: string;
   employeeCode?: string;
   EmployeeCode?: string;
+  isActive?: boolean;
 };
 
 type DeductionRow = {
@@ -130,6 +131,7 @@ export default function OtherDeductions() {
 
       return (
         (name.includes(lower) || code.includes(lower)) &&
+        e.isActive !== false &&
         !entries.some((en) => en.employeeID === e.EmployeeID) &&
         !alreadySavedIds.has(e.EmployeeID)
       );

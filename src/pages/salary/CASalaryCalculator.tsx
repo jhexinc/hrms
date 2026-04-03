@@ -167,6 +167,7 @@ export default function CASalaryCalculator() {
         if (pfApplicable === "true" && val !== "true") return false;
         if (pfApplicable === "false" && val !== "false") return false;
       }
+      if (row.isActive === false) return false;
       if (exitedOnly) {
         if (!row.exitDate) return false;
       }

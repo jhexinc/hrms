@@ -49,6 +49,7 @@ export default function AdminApplyLeave() {
     const query = searchQuery.toLowerCase();
 
     return employees.filter((emp) => {
+      if (emp.isActive === false) return false;
       const name = (emp.name || "").toLowerCase();
       const code = (
         emp.employeeCode ||
